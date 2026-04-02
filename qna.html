@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q&A — 디오네 도그케어</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'Nephilm';
+  src: url('images/Nephilm.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  --olive: #4a502e;
+  --olive-light: #71794c;
+  --olive-pale: #a8b084;
+  --cream: #f7f3ec;
+  --cream-dark: #ede8df;
+  --warm-white: #faf9f6;
+  --dark: #222512;
+  --text: #2d311a;
+  --text-light: #5a5f41;
+  --text-muted: #8c9079;
+  --gold: #b8975a;
+  --gold-light: #d4b07a;
+  --border: rgba(74,80,46,0.15);
+  --ff-display: 'Noto Sans KR', sans-serif;
+  --ff-body: 'Noto Sans KR', sans-serif;
+  --ff-en: 'Nephilm', 'Cormorant Garamond', Georgia, serif;
+  --transition: cubic-bezier(0.4, 0, 0.2, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--ff-body); background: var(--warm-white); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--olive-pale); border-radius: 2px; }
+
+/* HEADER */
+header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 64px;
+  background: rgba(250,249,246,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.header-logo { display: flex; align-items: center; text-decoration: none; }
+.header-nav { display: none; gap: 32px; align-items: center; }
+@media (min-width: 768px) { .header-nav { display: flex; } }
+.header-nav a { font-family: var(--ff-body); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-light); text-decoration: none; transition: color 0.2s; }
+.header-nav a:hover, .header-nav a.active { color: var(--olive); }
+.header-cta { display: none; gap: 10px; align-items: center; }
+@media (min-width: 768px) { .header-cta { display: flex; } }
+.btn-header { font-family: var(--ff-body); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 9px 20px; border-radius: 6px; text-decoration: none; font-weight: 500; transition: all 0.2s; }
+.btn-header-fill { background: var(--olive); color: var(--cream); border: 1px solid var(--olive); }
+.btn-header-fill:hover { background: var(--olive-light); }
+.menu-btn { display: flex; flex-direction: column; justify-content: center; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; }
+@media (min-width: 768px) { .menu-btn { display: none; } }
+.menu-btn span { display: block; width: 22px; height: 1.5px; background: var(--olive); transition: all 0.3s; transform-origin: center; }
+.menu-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.menu-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.menu-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* DRAWER */
+.side-drawer { position: fixed; top: 0; left: 0; height: 100%; width: min(80vw, 320px); background: var(--dark); z-index: 200; transform: translateX(-100%); transition: transform 0.4s var(--transition); display: flex; flex-direction: column; padding: 80px 40px 40px; }
+.side-drawer.open { transform: translateX(0); }
+.drawer-overlay { position: fixed; inset: 0; z-index: 199; background: rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+.drawer-close { position: absolute; top: 24px; right: 24px; background: none; border: none; cursor: pointer; color: var(--cream-dark); font-size: 22px; line-height: 1; }
+.drawer-nav { display: flex; flex-direction: column; gap: 0; }
+.drawer-nav a { font-family: var(--ff-body); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(247,243,236,0.65); text-decoration: none; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.08); transition: color 0.2s; display: flex; align-items: center; justify-content: space-between; }
+.drawer-nav a:hover { color: var(--gold-light); }
+.drawer-nav a::after { content: '→'; font-size: 12px; opacity: 0.4; }
+.drawer-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+.btn-drawer { display: block; text-align: center; text-decoration: none; font-family: var(--ff-body); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; padding: 14px 20px; border-radius: 6px; transition: all 0.2s; }
+.btn-drawer-kakao { background: #FEE500; color: #191919; }
+
+/* QNA HERO */
+.qna-hero {
+  background: var(--dark);
+  padding: 140px 28px 80px;
+  text-align: center;
+}
+.qna-hero-eyebrow { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-light); opacity: 0.7; margin-bottom: 16px; }
+.qna-hero-title { font-family: 'Noto Sans KR', sans-serif; font-size: clamp(32px, 6vw, 56px); color: var(--cream); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
+.qna-hero-sub { font-size: 15px; color: rgba(247,243,236,0.6); line-height: 1.7; }
+
+/* FAQ */
+.faq-section { padding: 80px 28px; max-width: 860px; margin: 0 auto; }
+.faq-list { display: flex; flex-direction: column; gap: 0; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-question { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 22px 0; gap: 16px; background: none; border: none; cursor: pointer; text-align: left; }
+.faq-q-text { font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.5; font-family: var(--ff-body); }
+.faq-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--olive-pale); display: flex; align-items: center; justify-content: center; color: var(--olive); font-size: 16px; transition: transform 0.3s; }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--transition); }
+.faq-answer-inner { font-size: 15px; line-height: 1.85; color: var(--text-light); padding: 0 0 28px; }
+.faq-category { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--olive-pale); background: var(--cream); padding: 3px 8px; border-radius: 3px; margin-bottom: 10px; }
+
+/* FOOTER */
+footer { background: var(--dark); padding: 56px 28px 40px; border-top: 1px solid rgba(255,255,255,0.07); }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 40px; }
+@media (min-width: 768px) { .footer-inner { grid-template-columns: 1.5fr 1fr; gap: 60px; } }
+.footer-brand { font-family: var(--ff-display); font-size: 22px; color: var(--cream); letter-spacing: 0.06em; margin-bottom: 12px; }
+.footer-address { font-size: 11px; line-height: 1.9; color: rgba(247,243,236,0.4); letter-spacing: 0.04em; }
+.footer-nav-title { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(247,243,236,0.3); margin-bottom: 16px; }
+.footer-nav-links { display: flex; flex-direction: column; gap: 10px; }
+.footer-nav-links a { font-size: 12px; color: rgba(247,243,236,0.5); text-decoration: none; transition: color 0.2s; }
+.footer-nav-links a:hover { color: var(--cream); }
+.footer-social { display: flex; gap: 12px; margin-top: 20px; align-items: center; }
+.social-icon-link { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.5); text-decoration: none; transition: background 0.2s, color 0.2s; }
+.social-icon-link:hover { background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.9); }
+.footer-bottom { max-width: 1200px; margin: 40px auto 0; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.footer-copy { font-size: 10px; letter-spacing: 0.1em; color: rgba(247,243,236,0.25); }
+@media (max-width: 767px) {
+  .faq-q-text { font-size: 15px; }
+  .faq-answer-inner { font-size: 14px; }
+  .faq-icon {
+    line-height: 1;
+    padding: 0;
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="side-drawer" id="sideDrawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <div style="margin-bottom:32px;"><img src="logo.png" alt="Dione Dog Care" style="height:31px;width:auto;display:block;filter:brightness(0) invert(1);opacity:0.85;"></div>
+  <nav class="drawer-nav">
+    <a href="index.html#services" onclick="closeDrawer()">Service</a>
+    <a href="index.html#facility" onclick="closeDrawer()">Facility</a>
+    <a href="qna.html" onclick="closeDrawer()" class="active">Q&amp;A</a>
+    <a href="https://blog.naver.com/dione_dogcare" target="_blank" onclick="closeDrawer()">Blog</a>
+    <a href="index.html#cta-banner" onclick="closeDrawer()">Contact</a>
+  </nav>
+  <div class="drawer-bottom">
+    <a href="https://pf.kakao.com/_aFexmG" target="_blank" class="btn-drawer btn-drawer-kakao">상담하기</a>
+  </div>
+</div>
+
+<header>
+  <a href="index.html" class="header-logo">
+    <img src="logo.png" alt="Dione Dog Care" style="height:31px;width:auto;display:block;">
+  </a>
+  <nav class="header-nav">
+    <a href="index.html#services">Service</a>
+    <a href="index.html#facility">Facility</a>
+    <a href="qna.html" class="active">Q&amp;A</a>
+    <a href="https://blog.naver.com/dione_dogcare" target="_blank">Blog</a>
+    <a href="index.html#cta-banner">Contact</a>
+  </nav>
+  <div class="header-cta">
+    <a href="https://pf.kakao.com/_aFexmG" target="_blank" class="btn-header btn-header-fill">상담하기</a>
+  </div>
+  <button class="menu-btn" id="menuBtn" onclick="toggleDrawer()">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<div class="qna-hero">
+  <p class="qna-hero-eyebrow">FAQ</p>
+  <h1 class="qna-hero-title">자주 묻는 질문</h1>
+  <p class="qna-hero-sub">보호자님의 걱정에 직접 답합니다</p>
+</div>
+
+<div class="faq-section">
+  <div class="faq-list" id="faqList"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand"><img src="logo.png" alt="Dione Dog Care" style="height:31px;width:auto;display:block;margin-bottom:4px;"></div>
+      <div class="footer-address">
+        디오네 도그케어<br>
+        서울특별시 서초구 반포대로9길 56 (서초동)<br>
+        대표 박정옥 · 02-6245-1234<br>
+        평일·주말·연휴 08:00–19:30 연중무휴
+      </div>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/dione_dogcare/" target="_blank" title="Instagram" class="social-icon-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4.5"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a href="https://pf.kakao.com/_aFexmG" target="_blank" title="KakaoTalk" class="social-icon-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+            <path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.55 5.07 3.9 6.5l-.97 3.62a.3.3 0 0 0 .46.33L9.7 18.8A11.5 11.5 0 0 0 12 19c5.523 0 10-3.477 10-7.8S17.523 3 12 3Z" opacity=".9"/>
+          </svg>
+        </a>
+        <a href="https://map.naver.com/p/search/%EB%94%94%EC%98%A4%EB%84%A4%20%EB%8F%84%EA%B7%B8%EC%BC%80%EC%96%B4/place/1198639383" target="_blank" title="Naver Place" class="social-icon-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+            <path d="M6 5 L6 19 L10 19 L10 12 L14 19 L18 19 L18 5 L14 5 L14 12 L10 5 Z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-nav-title">Services</div>
+      <div class="footer-nav-links">
+        <a href="index.html#services">Dione Care (유치원·호텔)</a>
+        <a href="index.html#services">Dione Salon (미용)</a>
+        <a href="index.html#services">Dione Training (트레이닝)</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2024 DIONE DOG CARE. All rights reserved.</span>
+  </div>
+</footer>
+
+
+<script>
+function toggleDrawer() {
+  const d = document.getElementById('sideDrawer');
+  const o = document.getElementById('drawerOverlay');
+  const b = document.getElementById('menuBtn');
+  d.classList.toggle('open');
+  o.classList.toggle('open');
+  b.classList.toggle('open');
+}
+function closeDrawer() {
+  document.getElementById('sideDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('menuBtn').classList.remove('open');
+}
+
+const faqs = [
+  { cat: '노견', q: '나이가 많은 노견인데 맡겨도 괜찮을까요?', a: '노령견 보호자님들이 가장 많이 걱정하시는 부분입니다. 저희는 노령견을 위한 별도 케어 기준을 두고 있습니다. 아이의 페이스에 맞게 충분한 휴식 시간을 드리며 무리한 활동은 최소화합니다. 24시간 상주 훈련사가 식욕·배변·활동량을 수시로 관찰하고, 노령견은 2인 1조 전담 케어로 낙상 위험 없이 안전하게 진행합니다.' },
+  { cat: '예민견', q: '미용 트라우마가 있는 예민한 아이입니다. 괜찮을까요?', a: '저희는 트라우마견 프렌들리 미용을 지향합니다. 아이가 싫어하는 포인트를 먼저 파악하고 억지로 진행하는 미용은 절대 하지 않습니다. 첫 방문에서는 가벼운 목욕부터 시작해 미용실이라는 공간에 먼저 익숙해지는 시간을 드립니다. 수소수·탄산수 보습 목욕으로 심리적 안정과 피부 건강까지 챙기고 있습니다.' },
+  { cat: '대형견', q: '중·대형견도 미용 및 호텔, 유치원 이용이 가능한가요?', a: '네. 중·대형견 전용 하이드로 바스와 초대형 건조룸을 갖추고 있으며, 체격이 큰 아이들도 충분히 움직일 수 있는 전용 공간에서 생활합니다. 대형견 특유의 피부·털 관리까지 전문적으로 케어합니다.' },
+  { cat: '분리불안', q: '보호자와 떨어지면 분리불안이 심한데 적응이 가능할까요?', a: '처음부터 긴 시간을 맡기기보다 짧은 방문부터 시작해 센터를 안전하고 즐거운 곳으로 인식할 수 있도록 단계적으로 적응시켜 드립니다. 1급 훈련사가 직접 밀착 케어하며, 층마다 24시간 CCTV로 사각지대 없이 관찰합니다.' },
+  { cat: '사회화', q: '다른 강아지들과 잘 어울리지 못하는데, 사회화 교육이 될까요?', a: '전문 훈련사가 개별 성향·에너지 레벨·사회성 정도를 정확히 파악하여 알맞은 그룹을 편성합니다. 아이들을 무작정 한 공간에 섞어두지 않으며, 안전한 환경 속에서 올바른 인사법과 놀이 예절을 배웁니다.' },
+  { cat: '입질', q: '빗질이나 발톱을 깎을 때 입질이 있는 아이입니다. 관리가 가능할까요?', a: '미용과 행동교정 두 측면에서 전문적으로 접근합니다. 미용 시 강압 없이 거부감 포인트를 파악해 자극을 최소화합니다. 유치원·훈련에서는 1급 훈련사가 입질의 근본 원인을 파악해 자연스러운 예절 교육과 병행합니다.' },
+  { cat: '호텔링', q: '호텔링 시 밤 시간대 관리는 어떻게 되나요?', a: '24시간 전문 훈련사 상주 시스템으로 운영됩니다. 새벽 시간에도 전문가가 아이들과 함께 머물기 때문에 응급 상황이나 작은 컨디션 변화에도 즉각 대처할 수 있습니다.' },
+  { cat: '미용 안전', q: '미용 중 안전사고는 어떻게 예방하나요?', a: '노견·예민견은 2인 1조 케어로 낙상 위험을 방지하며, 모든 미용 도구는 매회 엄격히 소독합니다. 미용 전 피부 상태·슬개골 등 관절 상태를 보호자님과 꼼꼼히 확인합니다.' },
+  { cat: '예방접종', q: '이용하려면 예방접종이 필수인가요?', a: '네. 기본 예방접종(종합백신·켄넬코프·광견병) 완료 후 최소 2주 이상 경과된 아이들에 한해 이용 가능합니다. 접종 수첩이나 병원 확인서를 지참해 주시면 감사합니다.' },
+  { cat: '식사·간식', q: '호텔링·유치원 시 밥과 간식은 어떻게 해야 하나요?', a: '평소 드시던 사료와 식사 횟수·양을 직접 챙겨오시는 것을 권장합니다. 갑작스러운 사료 변경은 소화 문제나 스트레스를 유발할 수 있습니다. 알레르기·주의 식품이 있다면 입실 시 꼭 알려주세요.' },
+  { cat: '일상 공유', q: '맡기는 동안 사진이나 영상을 받아볼 수 있나요?', a: '네. 아이의 일상 사진과 영상을 정기적으로 전달해 드리며, 층마다 설치된 CCTV를 통해 실시간으로 확인하실 수도 있습니다.' },
+  { cat: '픽업·주차', q: '주차 공간이 있나요? 픽업도 가능한가요?', a: '건물 내 전용 주차장이 완비되어 있습니다. 픽업 서비스는 거리에 따라 세부 조율이 필요하오니 먼저 문의 주시면 안내드립니다.' },
+  { cat: '첫 방문', q: '처음 방문 예정인데, 예약·상담은 어떻게 진행되나요?', a: '첫 방문 시 아이의 나이·건강 상태·성향(예민도·입질 여부 등)과 원하시는 케어 방향에 대해 꼼꼼히 심층 상담을 진행합니다. 미용 공간과 호텔·유치원 공간을 완전히 분리해 더욱 전문적으로 운영하고 있습니다.' },
+];
+const faqList = document.getElementById('faqList');
+faqs.forEach((faq) => {
+  const item = document.createElement('div');
+  item.className = 'faq-item';
+  item.innerHTML = `
+    <button class="faq-question" onclick="toggleFaq(this)">
+      <span class="faq-q-text"><span class="faq-category">${faq.cat}</span><br>${faq.q}</span>
+      <span class="faq-icon">+</span>
+    </button>
+    <div class="faq-answer">
+      <div class="faq-answer-inner">${faq.a}</div>
+    </div>
+  `;
+  faqList.appendChild(item);
+});
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const ans = item.querySelector('.faq-answer');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-answer').style.maxHeight = '0';
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    ans.style.maxHeight = ans.scrollHeight + 'px';
+  }
+}
+</script>
+</body>
+</html>
