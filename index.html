@@ -659,6 +659,47 @@ section { padding: 96px 28px; }
 }
 
 
+/* ─── MEDICAL PARTNER ─── */
+#medical-partner { background: var(--warm-white); }
+.partner-grid {
+  display: grid; grid-template-columns: 1fr; gap: 24px;
+}
+@media (min-width: 640px) { .partner-grid { grid-template-columns: repeat(2, 1fr); } }
+.partner-card {
+  background: #fff; border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.partner-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(0,0,0,0.11); }
+.partner-photos {
+  position: relative; aspect-ratio: 4/3; overflow: hidden; cursor: pointer;
+}
+.partner-photos img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0; transition: opacity 0.6s ease;
+}
+.partner-photos img.active { opacity: 1; }
+.partner-photo-dots {
+  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 6px; z-index: 2;
+}
+.partner-photo-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.7);
+  cursor: pointer; transition: background 0.3s;
+}
+.partner-photo-dot.active { background: #fff; }
+.partner-info { padding: 24px 24px 28px; }
+.partner-name {
+  font-family: var(--ff-display); font-size: 17px; font-weight: 700;
+  color: var(--dark); margin-bottom: 8px; letter-spacing: -0.01em;
+}
+.partner-desc {
+  font-size: 13px; line-height: 1.75; color: var(--text-light);
+}
+
 /* ─── REVIEWS ─── */
 #reviews { background: var(--cream); }
 .reviews-grid {
@@ -1467,6 +1508,56 @@ footer {
   </div>
 </section>
 
+<!-- MEDICAL PARTNER -->
+<section id="medical-partner">
+  <div class="section-max">
+    <p class="section-eyebrow reveal">Medical Partner</p>
+    <h2 class="section-title reveal">응급·전문 진료<br><em>협력 의료기관</em></h2>
+    <p class="section-lead reveal" style="margin-bottom:48px;">갑작스러운 상황에도, 신뢰할 수 있는 의료 네트워크와 함께합니다.</p>
+    <div class="partner-grid">
+
+      <!-- 예은동물병원 -->
+      <div class="partner-card reveal">
+        <div class="partner-photos" id="partner-yeeun" onclick="nextPartnerPhoto('yeeun')">
+          <img src="images/partner_yeeun_1.JPG" alt="예은동물병원 1" class="active">
+          <img src="images/partner_yeeun_2.JPG" alt="예은동물병원 2">
+          <img src="images/partner_yeeun_3.JPG" alt="예은동물병원 3">
+          <div class="partner-photo-dots" id="dots-yeeun">
+            <span class="partner-photo-dot active"></span>
+            <span class="partner-photo-dot"></span>
+            <span class="partner-photo-dot"></span>
+          </div>
+        </div>
+        <div class="partner-info">
+          <p class="partner-name">예은동물병원</p>
+          <p class="partner-desc">대한민국 대표 종합 동물병원. 응급 상황 시 즉각 의료 연계.</p>
+        </div>
+      </div>
+
+      <!-- 시니어동물병원 -->
+      <div class="partner-card reveal reveal-delay-1">
+        <div class="partner-photos" id="partner-senior" onclick="nextPartnerPhoto('senior')">
+          <img src="images/partner_senior_1.jpg" alt="시니어동물병원 1" class="active">
+          <img src="images/partner_senior_2.jpg" alt="시니어동물병원 2">
+          <img src="images/partner_senior_3.jpg" alt="시니어동물병원 3">
+          <img src="images/partner_senior_4.jpg" alt="시니어동물병원 4">
+          <div class="partner-photo-dots" id="dots-senior">
+            <span class="partner-photo-dot active"></span>
+            <span class="partner-photo-dot"></span>
+            <span class="partner-photo-dot"></span>
+            <span class="partner-photo-dot"></span>
+          </div>
+        </div>
+        <div class="partner-info">
+          <p class="partner-name">시니어동물병원</p>
+          <p class="partner-desc">노령견 전문 진료. 시니어 케이스 의료 자문 파트너.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- FACILITY -->
 <section id="facility">
   <div class="section-max">
@@ -1623,6 +1714,23 @@ function nextHeroSlide() {
 }
 
 heroTimer = setInterval(nextHeroSlide, 4000);
+
+// ─── PARTNER PHOTO SLIDESHOW
+const partnerState = {};
+function nextPartnerPhoto(id) {
+  const wrap = document.getElementById('partner-' + id);
+  const imgs = wrap.querySelectorAll('img');
+  const dots = document.getElementById('dots-' + id).querySelectorAll('.partner-photo-dot');
+  if (!partnerState[id]) partnerState[id] = 0;
+  imgs[partnerState[id]].classList.remove('active');
+  dots[partnerState[id]].classList.remove('active');
+  partnerState[id] = (partnerState[id] + 1) % imgs.length;
+  imgs[partnerState[id]].classList.add('active');
+  dots[partnerState[id]].classList.add('active');
+}
+// 4초 자동 슬라이드
+setInterval(() => nextPartnerPhoto('yeeun'), 4000);
+setInterval(() => nextPartnerPhoto('senior'), 4600);
 
 // ─── HERO SWIPE
 (function() {
