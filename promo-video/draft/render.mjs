@@ -2,7 +2,8 @@
 // 사용법 (저장소 루트에서):
 //   node promo-video/draft/render.mjs                    → promo-video/dione-a-day-draft.mp4 (촬영 메모 포함)
 //   node promo-video/draft/render.mjs --clean            → 촬영 메모 없이 렌더
-//   node promo-video/draft/render.mjs --stills 6,20,48   → 해당 초(sec)의 스틸 PNG만 저장
+//   node promo-video/draft/render.mjs --stills 6,20,48   → 해당 초(sec)의 스틸만 저장
+//   node promo-video/draft/render.mjs --page whoosh-test.html --fps 60 --out promo-video/whoosh-test.mp4
 // 필요: Node, Playwright(Chromium), ffmpeg
 import http from 'node:http';
 import fs from 'node:fs';
@@ -35,7 +36,8 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(p).pipe(res);
 });
 await new Promise(r => server.listen(0, '127.0.0.1', r));
-const url = `http://127.0.0.1:${server.address().port}/promo-video/draft/animatic.html?render=1${clean ? '&clean=1' : ''}`;
+const pageName = opt('--page', 'animatic.html');
+const url = `http://127.0.0.1:${server.address().port}/promo-video/draft/${pageName}?render=1${clean ? '&clean=1' : ''}`;
 
 async function openPage(browser) {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });

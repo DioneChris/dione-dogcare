@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>슝 전환 테스트</title>
+<style>
+@font-face { font-family: 'NotoKR'; src: url('fonts/NotoSansKR-300.ttf') format('truetype'); font-weight: 300; }
+@font-face { font-family: 'NotoKR'; src: url('fonts/NotoSansKR-400.ttf') format('truetype'); font-weight: 400; }
+@font-face { font-family: 'NotoKR'; src: url('fonts/NotoSansKR-500.ttf') format('truetype'); font-weight: 500; }
+@font-face { font-family: 'NotoKR'; src: url('fonts/NotoSansKR-700.ttf') format('truetype'); font-weight: 700; }
+@font-face { font-family: 'Nephilm'; src: url('../../images/Nephilm.ttf') format('truetype'); }
+:root { --olive: #4a502e; --olive-pale: #a8b084; --cream: #f7f3ec; --dark: #222512; --gold: #b8975a; --gold-light: #d4b07a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #111; }
+body { font-family: 'NotoKR', sans-serif; color: var(--cream); -webkit-font-smoothing: antialiased; }
+#wrap { width: 100vw; height: 100vh; overflow: hidden; }
+body.render #wrap { width: 1920px; height: 1080px; }
+#stage { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: var(--dark); transform-origin: 0 0; }
+
+/* 세로로 이어진 건물 스트립: [2F 유치원] [층 사이 슬래브] [1F 로비] */
+#strip { position: absolute; left: 0; top: 0; width: 1920px; will-change: transform; }
+.panel { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+.panel .ph { position: absolute; left: 0; right: 0; top: -90px; bottom: -90px; }
+.panel .ph img { width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+.panel svg { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible; }
+.slab { position: relative; width: 1920px; height: 340px; background: linear-gradient(#2c3118, #1f220f 50%, #2c3118); overflow: hidden; }
+.slab::before, .slab::after { content: ''; position: absolute; left: 0; right: 0; height: 10px; background: #5c6338; }
+.slab::before { top: 0; } .slab::after { bottom: 0; }
+.slab .lab { position: absolute; left: 0; right: 0; top: 118px; text-align: center; font-family: 'Nephilm'; font-size: 76px; letter-spacing: .3em; color: var(--gold-light); }
+.slab .sub { position: absolute; left: 0; right: 0; top: 212px; text-align: center; font-size: 26px; letter-spacing: .6em; color: rgba(247,243,236,.6); font-weight: 300; }
+
+.corner { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 1050px 560px at 0% 0%, rgba(14,16,6,.8), rgba(14,16,6,0) 100%), radial-gradient(ellipse 520px 520px at 100% 0%, rgba(14,16,6,.5), rgba(14,16,6,0) 100%); }
+#speed { position: absolute; inset: 0; pointer-events: none; }
+#speed i { position: absolute; top: 0; width: 3px; border-radius: 3px; background: rgba(247,243,236,.75); }
+
+/* 자막 (브랜드 톤) */
+.cap { position: absolute; left: 76px; top: 150px; }
+.ln { overflow: hidden; padding-bottom: 6px; }
+.ln > * { display: block; }
+.chip { font-family: 'Nephilm', serif; font-size: 34px; letter-spacing: .12em; color: var(--gold-light); display: flex !important; align-items: center; gap: 16px; }
+.chip::before { content: ''; width: 48px; height: 1px; background: var(--gold-light); }
+.chip small { font-family: 'NotoKR'; font-size: 23px; letter-spacing: .08em; }
+.cap h2 { font-size: 80px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; text-shadow: 0 2px 24px rgba(0,0,0,.3); }
+.cap p { font-size: 30px; font-weight: 300; color: rgba(247,243,236,.9); margin-top: 2px; }
+
+/* 스티커 포인트 */
+#shoong { position: absolute; left: 1090px; top: 300px; font-size: 210px; font-weight: 700; color: var(--cream); letter-spacing: -.02em; transform-origin: 30% 70%;
+  -webkit-text-stroke: 14px #2d311a; paint-order: stroke fill; text-shadow: 10px 12px 0 var(--gold-light); }
+.bubble { position: absolute; background: var(--cream); color: var(--olive); font-weight: 700; font-size: 50px; padding: 14px 32px; border-radius: 36px; box-shadow: 6px 8px 0 rgba(212,176,122,.95); white-space: nowrap; transform-origin: 20% 100%; }
+.bubble::after { content: ''; position: absolute; left: 44px; bottom: -20px; border: 13px solid transparent; border-top: 17px solid var(--cream); border-left-width: 6px; border-right-width: 20px; }
+
+/* HUD */
+#logo { position: absolute; left: 72px; top: 44px; width: 200px; filter: drop-shadow(0 2px 10px rgba(0,0,0,.45)); }
+#floor { position: absolute; right: 72px; top: 40px; width: 210px; height: 104px; border-radius: 18px; background: rgba(14,16,6,.55); border: 1px solid rgba(247,243,236,.22); overflow: hidden; }
+#floor .lab { position: absolute; left: 22px; top: 14px; font-family: 'Nephilm'; font-size: 17px; letter-spacing: .22em; color: var(--gold-light); }
+#floor .win { position: absolute; left: 0; right: 0; top: 34px; height: 64px; overflow: hidden; }
+#floor .stack > div { height: 64px; line-height: 64px; padding-left: 22px; font-family: 'Nephilm'; font-size: 50px; }
+#map { position: absolute; right: 72px; top: 158px; width: 210px; padding: 14px 22px; border-radius: 18px; background: rgba(14,16,6,.55); border: 1px solid rgba(247,243,236,.22); }
+#map .row { position: relative; height: 36px; display: flex; align-items: center; gap: 12px; font-family: 'Nephilm'; font-size: 24px; letter-spacing: .08em; color: rgba(247,243,236,.5); }
+#map .row span { width: 42px; }
+#map .row em { flex: 1; height: 1px; background: rgba(247,243,236,.22); }
+#map .row.on { color: var(--gold-light); }
+#mapdot { position: absolute; right: 30px; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: #f3d79b; box-shadow: 0 0 0 5px rgba(212,176,122,.25), 0 0 18px 5px rgba(243,215,155,.6); }
+#maptrail { position: absolute; right: 38px; width: 2px; background: linear-gradient(to top, rgba(212,176,122,0), #f3d79b); border-radius: 2px; }
+.slate { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); padding: 9px 22px 9px 10px; border-radius: 999px; background: rgba(10,10,6,.62); border: 1px solid rgba(247,243,236,.18); font-size: 21px; white-space: nowrap; display: flex; gap: 12px; align-items: center; }
+.slate b { font-family: 'Nephilm'; font-weight: 400; font-size: 18px; letter-spacing: .1em; padding: 4px 13px; border-radius: 999px; background: var(--gold-light); color: var(--dark); }
+body.clean .slate { display: none; }
+
+#ui { position: fixed; left: 0; right: 0; bottom: 0; padding: 10px 16px; background: rgba(0,0,0,.7); display: flex; gap: 12px; align-items: center; font: 14px system-ui; color: #eee; z-index: 99; }
+#ui input { flex: 1; } #ui button { padding: 6px 14px; border-radius: 6px; border: 0; background: #d4b07a; font-weight: 700; }
+body.render #ui { display: none; }
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+  <svg width="0" height="0" style="position:absolute"><filter id="vblur" x="-2%" y="-10%" width="104%" height="120%"><feGaussianBlur id="vb" stdDeviation="0 0"/></filter></svg>
+
+  <div id="strip">
+    <!-- 2F 유치원 (도착) -->
+    <div class="panel" id="p2">
+      <div class="ph"><img id="img2" src="../../images/floor_2f_kindergarten.jpg" style="object-position: 50% 60%; transform-origin: 55% 60%;"></div>
+      <svg viewBox="0 0 1920 1080"><g id="paws2"></g><g id="puff2"></g><ellipse id="sh2" cx="0" cy="0" rx="120" ry="16" fill="rgba(0,0,0,.22)"/><g id="lines2"></g><g id="dog2w" style="filter: drop-shadow(0 0 2.5px rgba(45,49,26,.75))"></g><g id="deco2"></g></svg>
+      <div class="bubble" id="hello" style="left: 1575px; top: 668px;">안녕!</div>
+    </div>
+    <!-- 층 사이 -->
+    <div class="slab"><div class="lab">2F</div><div class="sub">KINDERGARTEN</div><svg viewBox="0 0 1920 340" style="position:absolute;inset:0;width:1920px;height:340px"><g id="slabpaws"></g></svg></div>
+    <!-- 1F 로비 (출발) -->
+    <div class="panel" id="p1">
+      <div class="ph"><img id="img1" src="../../images/1층 로비.jpeg" style="transform-origin: 50% 70%;"></div>
+      <svg viewBox="0 0 1920 1080"><g id="paws1"></g><g id="puff1"></g><ellipse id="sh1" cx="0" cy="0" rx="120" ry="16" fill="rgba(0,0,0,.25)"/><g id="lines1"></g><g id="dog1w" style="filter: drop-shadow(0 0 2.5px rgba(45,49,26,.75))"></g></svg>
+    </div>
+  </div>
+
+  <div id="speed"></div>
+  <div class="corner"></div>
+  <div class="cap" id="cap1"><div class="ln"><div class="chip">08:00 <small>등원</small></div></div><div class="ln"><h2>좋은 아침!</h2></div><div class="ln"><p>오늘도 꼬리부터 먼저 도착</p></div></div>
+  <div class="cap" id="cap2"><div class="ln"><div class="chip">09:00 <small>2F 유치원</small></div></div><div class="ln"><h2>안녕, 친구들</h2></div><div class="ln"><p>1층에서 2층까지, 단숨에</p></div></div>
+  <div id="shoong">슝!</div>
+
+  <img id="logo" src="assets/logo-cream.png">
+  <div id="floor"><div class="lab">FLOOR</div><div class="win"><div class="stack" id="fstack"><div>1F</div><div>2F</div></div></div></div>
+  <div id="map"><div id="maptrail"></div><div id="mapdot"></div></div>
+  <div class="slate"><b>TEST</b>강아지는 일러스트 대역 · 배경은 사진 — 실제 촬영 영상으로 교체됩니다</div>
+</div></div>
+<div id="ui"><button id="play">▶︎ 재생</button><input type="range" id="scrub" min="0" max="10" step="0.01" value="0"><span id="tc"></span></div>
+
+<script>
+const DURATION = 10, FPS = 60;
+const Ease = {
+  linear: p => p, out: p => 1 - Math.pow(1 - p, 3), in: p => p * p * p,
+  inOut: p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2,
+  quart: p => p < .5 ? 8 * p * p * p * p : 1 - Math.pow(-2 * p + 2, 4) / 2,
+  out5: p => 1 - Math.pow(1 - p, 5), in4: p => p * p * p * p,
+  back: p => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); },
+};
+function K(keys, t) {
+  if (t <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) if (t <= keys[i][0]) {
+    const [t0, v0] = keys[i - 1], [t1, v1, e] = keys[i];
+    return v0 + (v1 - v0) * Ease[e || 'inOut']((t - t0) / (t1 - t0 || 1));
+  }
+  return keys[keys.length - 1][1];
+}
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const fx = [];
+
+/* ── 강아지 일러스트 (대역) ── */
+function dogG(id, { fill = '#f7f3ec', shade = '#ddd5c4', ink = '#2d311a', collar = '#d4b07a' } = {}) {
+  const leg = (cls, x, y, c) => `<g class="${cls}" data-b="translate(${x},${y})" transform="translate(${x},${y})"><line x1="0" y1="0" x2="0" y2="50" stroke="${c}" stroke-width="15" stroke-linecap="round"/></g>`;
+  return `<g id="${id}"><g class="bob"><g transform="translate(-120,-150)">
+    <g class="tail" transform="translate(62,72)"><path d="M0 0 C -14 -10, -22 -26, -26 -44" fill="none" stroke="${fill}" stroke-width="10" stroke-linecap="round"/></g>
+    ${leg('lbf', 90, 92, shade)}${leg('lff', 168, 92, shade)}
+    <ellipse cx="116" cy="80" rx="60" ry="27" fill="${fill}"/><ellipse cx="160" cy="80" rx="28" ry="26" fill="${fill}"/>
+    <line x1="166" y1="72" x2="186" y2="42" stroke="${fill}" stroke-width="30" stroke-linecap="round"/>
+    <path d="M168 62 L184 50" stroke="${collar}" stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="194" cy="36" rx="21" ry="18" fill="${fill}"/><ellipse cx="214" cy="45" rx="15" ry="9.5" fill="${fill}"/>
+    <circle cx="227" cy="42" r="4.5" fill="${ink}"/><circle cx="200" cy="31" r="3" fill="${ink}"/>
+    <path d="M184 22 C 172 28, 170 46, 178 56 C 188 52, 192 38, 190 24 Z" fill="${shade}"/>
+    ${leg('lbn', 82, 92, fill)}${leg('lfn', 160, 92, fill)}
+  </g></g></g>`;
+}
+// gait: 다리 위상(누적), amp: 다리 벌어짐(0~1), wag: 꼬리 시간
+function poseDog(g, gait, amp, wag) {
+  const A = 40 * amp, set = (c, a) => { const e = g.querySelector('.' + c); e.setAttribute('transform', `${e.dataset.b} rotate(${a})`); };
+  set('lfn', A * Math.sin(gait)); set('lff', A * Math.sin(gait + .6));
+  set('lbn', A * Math.sin(gait + Math.PI)); set('lbf', A * Math.sin(gait + Math.PI + .6));
+  g.querySelector('.bob').setAttribute('transform', `translate(0,${-10 * amp * Math.abs(Math.sin(gait))}) rotate(${4 * amp * Math.sin(gait)})`);
+  g.querySelector('.tail').setAttribute('transform', `translate(62,72) rotate(${16 * Math.sin(wag * 20)})`);
+}
+const PAW = `<ellipse cx="0" cy="6" rx="11" ry="9"/><circle cx="-11" cy="-6" r="4.2"/><circle cx="-4" cy="-12" r="4.2"/><circle cx="5" cy="-12" r="4.2"/><circle cx="12" cy="-5" r="4.2"/>`;
+const STAR = `<path d="M0 -16 C 2 -5, 5 -2, 16 0 C 5 2, 2 5, 0 16 C -2 5, -5 2, -16 0 C -5 -2, -2 -5, 0 -16 Z"/>`;
+const HEART = `<path transform="translate(-12,-13)" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 5 6.5 5c2 0 3.6 1.1 4.5 2.6C11.9 6.1 13.5 5 15.5 5 19 5 21.1 8.5 19.6 11.8 17.5 16.4 12 21 12 21z"/>`;
+
+/* ── 타이밍 ── */
+const T = { dashGo: 2.55, whipA: 2.85, whipB: 4.2, settle: 4.6, arrive: 4.0, stop: 5.05 };
+const STRIP = [[0, -1420], [T.whipA, -1420], [T.whipB, 30, 'quart'], [T.settle, 0, 'inOut']];
+
+// 1F 강아지
+const D1 = {
+  x: [[0.25, -240], [1.55, 640, 'out'], [2.1, 640], [T.dashGo, 596, 'inOut'], [3.02, 2500, 'in4']],
+  sx: [[2.1, 1], [T.dashGo, 0.9, 'inOut'], [2.72, 1.5, 'out'], [3.02, 1.7]],
+  sy: [[2.1, 1], [T.dashGo, 0.84, 'inOut'], [2.72, 0.86, 'out']],
+  amp: [[0.25, .55], [1.3, .55], [1.6, 0, 'out'], [T.dashGo, 0], [2.65, 1, 'out']],
+};
+// 2F 강아지
+const D2 = {
+  x: [[T.arrive, -460], [T.stop, 1720, 'out5']],
+  face: [[T.stop + .35, 1], [T.stop + .6, -1, 'inOut']],
+  sx: [[T.arrive, 1.7], [T.stop, 1, 'out']],
+  sy: [[T.arrive, 0.84], [T.stop - .15, 0.9, 'out'], [T.stop + .12, 1.08, 'out'], [T.stop + .3, 1, 'inOut']],
+  rot: [[T.arrive, 0], [T.stop - .2, -9, 'out'], [T.stop + .15, 0, 'inOut']],
+  hop: [[T.stop, 0], [T.stop + .16, -30, 'out'], [T.stop + .34, 0, 'in'], [7.3, 0], [7.46, -52, 'out'], [7.66, 0, 'in'], [7.7, 0], [7.84, -30, 'out'], [8.0, 0, 'in']],
+  amp: [[T.arrive, 1], [T.stop - .25, 1], [T.stop, 0, 'out']],
+};
+let gait1 = [], gait2 = [];
+function integrate(ampKeys, xKeys, t0, t1) { // 달린 거리만큼 다리가 돌도록 위상 누적
+  const out = []; let ph = 0, px = K(xKeys, t0);
+  for (let i = 0; i <= (t1 - t0) * 240; i++) { const t = t0 + i / 240, x = K(xKeys, t); ph += Math.min(Math.abs(x - px) / 120, .5) * Math.PI; px = x; out.push(ph); }
+  return t => out[Math.max(0, Math.min(out.length - 1, Math.round((t - t0) * 240)))];
+}
+
+function build() {
+  $('#dog1w').innerHTML = dogG('dog1'); $('#dog2w').innerHTML = dogG('dog2');
+  const g1 = integrate(D1.amp, D1.x, 0, 3.2), g2 = integrate(D2.amp, D2.x, T.arrive, 5.4);
+
+  // 발자국
+  const P1 = []; for (let x = 720, i = 0; x < 1900; x += 150, i++) P1.push([x, i % 2 ? 1012 : 992]);
+  $('#paws1').innerHTML = P1.map(([x, y]) => `<g class="pw" transform="translate(${x},${y}) rotate(90) scale(1.5)" fill="#d4b07a">${PAW}</g>`).join('');
+  const P2 = []; for (let x = 40, i = 0; x < 1500; x += 190, i++) P2.push([x, i % 2 ? 1062 : 1040]);
+  $('#paws2').innerHTML = P2.map(([x, y]) => `<g class="pw" transform="translate(${x},${y}) rotate(90) scale(1.5)" fill="#d4b07a">${PAW}</g>`).join('');
+  $('#slabpaws').innerHTML = [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<g transform="translate(${250 + i * 60},${290 - i * 34}) rotate(${-25}) scale(1.25)" fill="rgba(212,176,122,.5)">${PAW}</g>`).join('')
+    + [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<g transform="translate(${1210 + i * 60},${290 - i * 34}) rotate(${-25}) scale(1.25)" fill="rgba(212,176,122,.5)">${PAW}</g>`).join('');
+  // 먼지
+  const puff = (id) => $(id).innerHTML = [0, 1, 2, 3].map(i => `<circle class="pf" data-i="${i}" r="26" fill="#f7f3ec"/>`).join('');
+  puff('#puff1'); puff('#puff2');
+  // 스피드 라인 (강아지 뒤)
+  const sl = id => $(id).innerHTML = [0, 1, 2, 3, 4].map(i => `<line class="sl" data-i="${i}" stroke="#f7f3ec" stroke-width="${i % 2 ? 5 : 8}" stroke-linecap="round"/>`).join('');
+  sl('#lines1'); sl('#lines2');
+  // 2F 포인트: 별 · 하트
+  $('#deco2').innerHTML = `<g id="st1" fill="#f3d79b">${STAR}</g><g id="st2" fill="#f7f3ec">${STAR}</g><g id="st3" fill="#f3d79b">${STAR}</g>
+    <g id="ht1" fill="#f2b8a8">${HEART}</g><g id="ht2" fill="#d4b07a">${HEART}</g><g id="ht3" fill="#f7f3ec">${HEART}</g>`;
+  // 세로 스피드 라인 (화면 전체)
+  let s = ''; let k = 11;
+  for (let i = 0; i < 26; i++) { k = (k * 9301 + 49297) % 233280; const x = 40 + (k % 1840), h = 160 + (k % 420), o = (k % 1300); s += `<i data-o="${o}" data-h="${h}" style="left:${x}px;height:${h}px"></i>`; }
+  $('#speed').innerHTML = s;
+  // 미니맵
+  const floors = ['6F', '5F', '4F', '3F', '2F', '1F', 'B1'];
+  $('#map').insertAdjacentHTML('afterbegin', floors.map(f => `<div class="row" data-f="${f}"><span>${f}</span><em></em></div>`).join(''));
+
+  const pfx = [[-40, 6, 1.0], [-80, -8, .8], [-20, -18, .7], [-110, 4, .6]];
+  function puffAt(root, t, t0, x, y) {
+    const p = (t - t0) / .7;
+    $$(root + ' .pf').forEach((c, i) => {
+      if (p <= 0 || p >= 1) return c.setAttribute('opacity', 0);
+      const [dx, dy, sc] = pfx[i], e = Ease.out(p);
+      c.setAttribute('cx', x + dx * (0.4 + e)); c.setAttribute('cy', y + dy * (0.4 + e * 1.6) - 10);
+      c.setAttribute('r', 26 * sc * (0.5 + e)); c.setAttribute('opacity', 0.75 * (1 - p));
+    });
+  }
+  function linesAt(root, x, y, strength) {
+    $$(root + ' .sl').forEach((l, i) => {
+      const yy = y - 150 + 22 + i * 30, len = (120 + (i * 53) % 110) * strength;
+      l.setAttribute('x1', x - 150 - len - (i % 2) * 40); l.setAttribute('x2', x - 150 - (i % 2) * 40);
+      l.setAttribute('y1', yy); l.setAttribute('y2', yy); l.setAttribute('opacity', Math.min(1, strength) * .85);
+    });
+  }
+  const pop = (el, t, t0, x, y, sc = 1, life = 2.2, rise = 120) => {
+    const p = (t - t0) / life;
+    if (p <= 0 || p >= 1) return el.setAttribute('opacity', 0);
+    const s = sc * (p < .18 ? Ease.back(p / .18) : 1);
+    el.setAttribute('transform', `translate(${x + Math.sin(p * 7) * 14},${y - Ease.out(p) * rise}) scale(${s})`);
+    el.setAttribute('opacity', p > .7 ? (1 - p) / .3 : 1);
+  };
+  const twinkle = (el, t, t0, x, y, sc) => {
+    const p = (t - t0) / 1.1;
+    if (p <= 0 || p >= 1) return el.setAttribute('opacity', 0);
+    const s = sc * Math.sin(p * Math.PI);
+    el.setAttribute('transform', `translate(${x},${y}) rotate(${p * 90}) scale(${s})`); el.setAttribute('opacity', 1);
+  };
+
+  fx.push(t => {
+    /* 스트립 스크롤 + 세로 모션블러 */
+    const y = K(STRIP, t), v = Math.abs(K(STRIP, t + 1 / 120) - K(STRIP, t - 1 / 120)) * 60; // px/s
+    $('#strip').style.transform = `translate3d(0,${y}px,0)`;
+    const blur = Math.min(46, v / 110);
+    $('#vb').setAttribute('stdDeviation', `0 ${blur.toFixed(2)}`);
+    $('#strip').style.filter = blur > 0.4 ? 'url(#vblur)' : 'none';
+    $$('#speed i').forEach(el => {
+      const o = +el.dataset.o, h = +el.dataset.h, yy = ((y + 1420) * 2.2 + o) % (1080 + h) - h;
+      el.style.transform = `translateY(${yy}px)`; el.style.opacity = Math.min(.8, v / 2600);
+    });
+    /* 배경 미세 줌 */
+    $('#img1').style.transform = `scale(${K([[0, 1.0], [3.2, 1.07, 'linear']], t)})`;
+    $('#img2').style.transform = `scale(${K([[T.whipA, 1.12], [T.settle + .4, 1.03, 'out'], [10, 1.09, 'linear']], t)})`;
+
+    /* 1F 강아지 */
+    const x1 = K(D1.x, t), sx1 = K(D1.sx, t), sy1 = K(D1.sy, t), Y1 = 1000, S = 1.3;
+    $('#dog1w').setAttribute('transform', `translate(${x1},${Y1}) scale(${S * sx1},${S * sy1})`);
+    poseDog($('#dog1'), g1(Math.min(t, 3.2)), K(D1.amp, t), t);
+    $('#sh1').setAttribute('transform', `translate(${x1},${Y1 + 2}) scale(${sx1},1)`);
+    const dash1 = K([[T.dashGo, 0], [2.75, 1, 'out']], t);
+    linesAt('#lines1', x1, Y1, dash1 * 1.6);
+    puffAt('#puff1', t, T.dashGo, 600, 1000);
+    $$('#paws1 .pw').forEach((p, i) => { const tx = 720 + i * 150; const tp = t - (2.6 + (tx - 600) / 4200); p.setAttribute('opacity', tp < 0 || x1 < tx ? 0 : Math.max(0, .9 - tp * .6)); });
+
+    /* 2F 강아지 */
+    const x2 = K(D2.x, t), sx2 = K(D2.sx, t), sy2 = K(D2.sy, t), Y2 = 1052, hop = K(D2.hop, t), face = K(D2.face, t);
+    $('#dog2w').setAttribute('transform', `translate(${x2},${Y2 + hop}) rotate(${K(D2.rot, t)}) scale(${1.6 * sx2 * face},${1.6 * sy2})`);
+    poseDog($('#dog2'), g2(Math.max(T.arrive, Math.min(t, 5.4))), K(D2.amp, t), t);
+    $('#sh2').setAttribute('transform', `translate(${x2},${Y2 + 2}) scale(${1.4 * sx2 * (1 + hop / 120)},1.3)`);
+    linesAt('#lines2', x2, Y2, K([[T.arrive, 1.7], [T.stop - .1, 0, 'out']], t));
+    puffAt('#puff2', t, T.stop - .3, 1620, 1050);
+    $$('#paws2 .pw').forEach((p, i) => { const tx = 40 + i * 190; p.setAttribute('opacity', x2 < tx + 120 ? 0 : K([[T.stop, .9], [6.6, .9], [7.8, 0]], t)); });
+    // 포인트
+    const hb = K([[5.75, 0], [6.1, 1, 'back'], [9.1, 1], [9.4, 0, 'in']], t);
+    $('#hello').style.transform = `scale(${hb}) rotate(-4deg)`; $('#hello').style.opacity = hb > .02 ? 1 : 0;
+    twinkle($('#st1'), t, 4.95, 1500, 960, 2.0); twinkle($('#st2'), t, 5.15, 1850, 800, 1.4); twinkle($('#st3'), t, 5.4, 1640, 770, 1.2);
+    pop($('#ht1'), t, 6.1, 640, 410, 2.6, 2.4, 150); pop($('#ht2'), t, 6.45, 930, 560, 2.2, 2.4, 140); pop($('#ht3'), t, 6.8, 1460, 540, 2.0, 2.2, 130);
+
+    /* 슝! */
+    const sh = K([[2.5, 0], [2.78, 1, 'back'], [3.75, 1.12, 'linear'], [4.0, 1.5, 'in']], t);
+    const so = K([[2.5, 0], [2.6, 1, 'linear'], [3.7, 1], [4.0, 0, 'linear']], t);
+    const el = $('#shoong');
+    el.style.opacity = so; el.style.visibility = so < .01 ? 'hidden' : 'visible';
+    el.style.transform = `translate(${Math.sin(t * 70) * (v > 300 ? 5 : 0)}px, ${K([[T.whipA, 0], [3.9, 60, 'linear']], t)}px) rotate(-9deg) scale(${sh})`;
+
+    /* 자막 */
+    const cap = (id, tin, tout) => $$(id + ' .ln > *').forEach((e, i) => {
+      const a = tin + i * .14, yp = t < tout ? K([[a, 110], [a + .7, 0, 'out']], t) : K([[tout, 0], [tout + .35, -110, 'in']], t);
+      const o = t < tout ? K([[a, 0], [a + .4, 1, 'out']], t) : K([[tout, 1], [tout + .3, 0]], t);
+      e.style.transform = `translateY(${yp}%)`; e.style.opacity = o; e.style.visibility = o < .01 ? 'hidden' : 'visible';
+    });
+    cap('#cap1', 0.35, 2.45); cap('#cap2', 4.9, 99);
+
+    /* HUD: 층 표시 · 미니맵 */
+    $('#fstack').style.transform = `translateY(${K([[3.35, 0], [3.8, -64, 'inOut']], t)}px)`;
+    const rowY = f => { const r = document.querySelector(`#map .row[data-f="${f}"]`); return r.offsetTop + 18; };
+    const my = K([[3.0, rowY('1F')], [3.75, rowY('2F'), 'quart']], t);
+    $('#mapdot').style.top = my + 'px';
+    const tr = K([[3.0, 0], [3.4, 1, 'out'], [4.1, 0, 'in']], t);
+    $('#maptrail').style.top = my + 'px'; $('#maptrail').style.height = (rowY('1F') - my) * tr + 'px';
+    $$('#map .row').forEach(r => r.classList.toggle('on', r.dataset.f === (t < 3.5 ? '1F' : '2F')));
+  });
+}
+function seek(t) { for (const f of fx) f(t); }
+
+const params = new URLSearchParams(location.search);
+if (params.has('render')) document.body.classList.add('render');
+if (params.has('clean')) document.body.classList.add('clean');
+build();
+window.seek = seek; window.DURATION = DURATION; window.FPS = FPS;
+window.ready = Promise.all([document.fonts.ready, ...$$('img').map(i => i.decode().catch(() => {}))]);
+function fit() { if (document.body.classList.contains('render')) return; const s = Math.min(innerWidth / 1920, (innerHeight - 50) / 1080); $('#stage').style.transform = `scale(${s})`; }
+addEventListener('resize', fit); fit();
+let playing = false, t = 0, last = 0;
+function frame(now) { if (playing) { t += (now - last) / 1000; if (t > DURATION) t = 0; $('#scrub').value = t; } last = now; seek(t); $('#tc').textContent = t.toFixed(2) + 's'; requestAnimationFrame(frame); }
+$('#scrub').addEventListener('input', e => { t = +e.target.value; });
+$('#play').addEventListener('click', () => { playing = !playing; $('#play').textContent = playing ? '❚❚ 정지' : '▶︎ 재생'; });
+if (!params.has('render')) requestAnimationFrame(frame); else seek(0);
+</script>
+</body>
+</html>
