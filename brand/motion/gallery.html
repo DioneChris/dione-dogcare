@@ -1,0 +1,145 @@
+<title>Dione 모션 그래픽</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: a quiet contact sheet. Logo and spec line up top, then a grid of 3:4 looping frames, each captioned like a film still. */
+/* Single look by choice: this is a brand presentation, shown on Dione's own cream paper in either host theme. */
+:root {
+  --paper: #f7f3ec;
+  --paper-deep: #ede8df;
+  --olive: #4a502e;
+  --ink: #2d311a;
+  --ink-soft: #5a5f41;
+  --gold: #8a6d34;
+  --rule: rgba(74, 80, 46, 0.2);
+  --ff-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --ff-body: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--ff-body);
+  font-size: 15px;
+  line-height: 1.65;
+  padding-block: 48px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 40px; }
+header { display: flex; flex-direction: column; gap: 18px; padding-bottom: 28px; border-bottom: 1px solid var(--rule); }
+header img { width: 190px; height: auto; }
+h1 { margin: 0; font-size: clamp(26px, 4vw, 38px); font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; text-wrap: balance; }
+.lede { margin: 0; max-width: 62ch; color: var(--ink-soft); }
+.spec { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.spec b { color: var(--ink); font-weight: 500; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 40px 28px; }
+figure { margin: 0; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.frame { position: relative; aspect-ratio: 3 / 4; max-width: 100%; background: var(--paper-deep); overflow: hidden; border-radius: 3px; }
+.frame video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.frame button { position: absolute; inset: 0; width: 100%; border: 0; padding: 0; background: transparent; cursor: pointer; }
+.frame button:focus-visible { outline: 3px solid var(--gold); outline-offset: -3px; }
+.frame .state { position: absolute; right: 12px; bottom: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(45, 49, 26, 0.78); color: var(--paper); font-size: 12px; pointer-events: none; }
+figcaption { display: flex; flex-direction: column; gap: 4px; }
+.name { display: flex; align-items: baseline; gap: 10px; margin: 0; font-size: 18px; font-weight: 700; }
+.name span { font-family: var(--ff-display); font-size: 21px; font-weight: 600; color: var(--gold); letter-spacing: 0.04em; }
+.what { margin: 0; color: var(--ink-soft); }
+.file { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.file b { color: var(--ink); font-weight: 500; }
+</style>
+
+<div class="wrap">
+  <header>
+    <img src="logo.png" alt="Dione Dog care">
+    <h1>모션 그래픽 7종</h1>
+    <p class="lede">로고의 포인터와 브랜드 패턴, 매장의 아치를 재료로 그린 짧은 일러스트 영상입니다. 6번까지는 끊김 없이 반복되고, 7번은 한 번 재생하는 로고 영상입니다.</p>
+    <ul class="spec">
+      <li><b>1080 × 1440</b> 세로 3:4</li>
+      <li><b>30fps</b> · 7초</li>
+      <li><b>MP4</b> H.264</li>
+      <li>소리 없음</li>
+    </ul>
+  </header>
+
+  <div class="grid">
+    <figure>
+      <div class="frame"><video src="01-walk.mp4" poster="01-walk.jpg" muted loop playsinline preload="metadata"></video><button type="button" id="v1" aria-label="산책 영상 재생 또는 일시정지"></button><span class="state" hidden>일시정지</span></div>
+      <figcaption>
+        <p class="name"><span>01</span>산책</p>
+        <p class="what">올리브 코트를 입은 보호자와 포인터, 푸들의 산책. 피드 게시물이나 홈페이지 첫 화면에 어울립니다.</p>
+        <p class="file"><b>01-walk.mp4</b> · 반복</p>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><video src="02-run.mp4" poster="02-run.jpg" muted loop playsinline preload="metadata"></video><button type="button" id="v2" aria-label="뛰어놀기 영상 재생 또는 일시정지"></button><span class="state" hidden>일시정지</span></div>
+      <figcaption>
+        <p class="name"><span>02</span>뛰어놀기</p>
+        <p class="what">공을 쫓아 잔디밭을 달리는 여덟 마리. 유치원과 놀이터 소개, 사진 사이 전환 컷으로 쓸 수 있습니다.</p>
+        <p class="file"><b>02-run.mp4</b> · 반복</p>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><video src="03-crossing.mp4" poster="03-crossing.jpg" muted loop playsinline preload="metadata"></video><button type="button" id="v3" aria-label="등원길 영상 재생 또는 일시정지"></button><span class="state" hidden>일시정지</span></div>
+      <figcaption>
+        <p class="name"><span>03</span>등원길</p>
+        <p class="what">은행나무 길 끝의 디오네를 향해 횡단보도를 건너는 강아지들. 등원 안내와 가을 공지에 맞습니다.</p>
+        <p class="file"><b>03-crossing.mp4</b> · 반복</p>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><video src="04-van.mp4" poster="04-van.jpg" muted loop playsinline preload="metadata"></video><button type="button" id="v4" aria-label="차량 영상 재생 또는 일시정지"></button><span class="state" hidden>일시정지</span></div>
+      <figcaption>
+        <p class="name"><span>04</span>차량</p>
+        <p class="what">랩핑 1안을 입은 차와 창밖을 내다보는 강아지들. 차량 운행 관련 안내에 쓸 수 있습니다.</p>
+        <p class="file"><b>04-van.mp4</b> · 반복</p>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><video src="05-goodnight.mp4" poster="05-goodnight.jpg" muted loop playsinline preload="metadata"></video><button type="button" id="v5" aria-label="굿나잇 영상 재생 또는 일시정지"></button><span class="state" hidden>일시정지</span></div>
+      <figcaption>
+        <p class="name"><span>05</span>굿나잇</p>
+        <p class="what">아치마다 잠든 호텔 손님들. 호텔의 밤 소식이나 하루를 마치는 인사에 어울립니다.</p>
+        <p class="file"><b>05-goodnight.mp4</b> · 반복</p>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><video src="06-salon.mp4" poster="06-salon.jpg" muted loop playsinline preload="metadata"></video><button type="button" id="v6" aria-label="살롱 영상 재생 또는 일시정지"></button><span class="state" hidden>일시정지</span></div>
+      <figcaption>
+        <p class="name"><span>06</span>살롱</p>
+        <p class="what">거품 목욕 중인 포인터. 미용 예약 안내와 살롱 소개에 쓸 수 있습니다.</p>
+        <p class="file"><b>06-salon.mp4</b> · 반복</p>
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><video src="07-logo.mp4" poster="07-logo.jpg" muted loop playsinline preload="metadata"></video><button type="button" id="v7" aria-label="로고 영상 재생 또는 일시정지"></button><span class="state" hidden>일시정지</span></div>
+      <figcaption>
+        <p class="name"><span>07</span>로고</p>
+        <p class="what">포인터가 걸어 들어와 로고가 됩니다. 다른 영상의 앞이나 뒤에 붙이는 인트로·아웃트로입니다.</p>
+        <p class="file"><b>07-logo.mp4</b> · 1회 재생</p>
+      </figcaption>
+    </figure>
+  </div>
+</div>
+
+<script>
+(function () {
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var frames = Array.prototype.slice.call(document.querySelectorAll('.frame'));
+  frames.forEach(function (fr) {
+    var v = fr.querySelector('video'), b = fr.querySelector('button'), s = fr.querySelector('.state');
+    fr.paused = still;            // the viewer's own choice; scrolling never overrides it
+    s.hidden = !fr.paused;
+    b.addEventListener('click', function () {
+      fr.paused = !fr.paused; s.hidden = !fr.paused;
+      if (fr.paused) v.pause(); else v.play().catch(function () {});
+    });
+  });
+  if (!('IntersectionObserver' in window)) { frames.forEach(function (fr) { if (!fr.paused) fr.querySelector('video').play().catch(function () {}); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      var v = e.target.querySelector('video');
+      if (e.isIntersecting && !e.target.paused) v.play().catch(function () {}); else v.pause();
+    });
+  }, { threshold: 0.25 });
+  frames.forEach(function (fr) { io.observe(fr); });
+})();
+</script>

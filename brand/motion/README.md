@@ -1,0 +1,35 @@
+# Dione 모션 그래픽
+
+로고의 포인터, 브랜드 패턴, 매장의 아치를 재료로 그린 일러스트 영상 7종입니다.
+모두 1080×1440(세로 3:4), 30fps, 7초, H.264 MP4, 소리 없음.
+
+| 파일 | 내용 | 재생 |
+| --- | --- | --- |
+| `01-walk.mp4` | 올리브 코트를 입은 보호자와 포인터, 푸들의 산책 | 반복 |
+| `02-run.mp4` | 공을 쫓아 잔디밭을 달리는 여덟 마리 | 반복 |
+| `03-crossing.mp4` | 은행나무 길 끝의 디오네를 향해 횡단보도를 건너는 강아지들 | 반복 |
+| `04-van.mp4` | 랩핑 1안을 입은 차와 창밖을 내다보는 강아지들 | 반복 |
+| `05-goodnight.mp4` | 아치마다 잠든 호텔 손님들 | 반복 |
+| `06-salon.mp4` | 거품 목욕 중인 포인터 | 반복 |
+| `07-logo.mp4` | 포인터가 걸어 들어와 로고가 되는 인트로·아웃트로 | 1회 |
+
+`gallery.html`은 일곱 영상을 한 화면에서 보는 미리보기 페이지, 같은 이름의 `.jpg`는 대표 프레임입니다.
+
+## 다시 만들기
+
+영상은 코드로 그립니다. 색, 견종, 속도, 구도를 바꿔 다시 뽑을 수 있습니다.
+
+- `src/rig.js` — 강아지 14견종과 사람 캐릭터의 걷기·달리기 동작
+- `src/scenes/*.js` — 장면별 구성 (시간 `t`를 받아 한 프레임을 그림)
+- `src/common.js` — 붓 가장자리 질감, 종이 결, 로고 푸터
+- `src/assets.js` — 로고·패턴 데이터 (`brand/pattern/src`에서 생성)
+
+Node, Playwright(Chromium), ffmpeg가 필요합니다.
+
+```bash
+cd brand/motion/src
+node mkgrain.js
+node render.js ../out walk run crossing van night salon logo
+```
+
+한 프레임만 확인할 때는 `node shot.js walk ../out/walk_%.jpg 1.5` (마지막 숫자는 초).
