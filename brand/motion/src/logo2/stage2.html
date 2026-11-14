@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8">
+<style>html,body{margin:0;background:#000}svg{display:block}</style>
+<svg id="stage" xmlns="http://www.w3.org/2000/svg" width="1080" height="1440" viewBox="0 0 1080 1440"></svg>
+<script src="logo2_data.js"></script><script src="dogrig.js"></script><script src="scene_logo2.js"></script>
+<script>
+window.renderAt = t => { document.getElementById('stage').innerHTML = SCENE.renderAt(t); };
+renderAt(+(new URLSearchParams(location.search).get('t') || 0)); window.READY = true;
+</script>
