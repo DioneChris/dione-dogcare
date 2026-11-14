@@ -806,6 +806,29 @@ section { padding: 96px 28px; }
   font-size: 13px; line-height: 1.75; color: var(--text-light);
 }
 
+/* ─── METHOD (훈련사 양성) ─── */
+#method { background: var(--olive); padding: 88px 28px; }
+#method .section-eyebrow { color: var(--gold-light); opacity: 0.85; }
+#method .section-title { color: var(--cream); margin-bottom: 20px; }
+#method .section-title em { color: var(--gold-light); }
+.method-inner { display: grid; grid-template-columns: 1fr; gap: 40px; }
+@media (min-width: 860px) { .method-inner { grid-template-columns: 1.1fr 1fr; gap: 72px; align-items: center; } }
+.method-desc { font-size: 15px; line-height: 1.85; color: rgba(247,243,236,0.78); max-width: 480px; margin-bottom: 28px; word-break: keep-all; }
+.btn-method {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; letter-spacing: 0.08em; font-weight: 500;
+  padding: 13px 26px; border-radius: 6px; text-decoration: none;
+  background: var(--cream); color: var(--olive);
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-method:hover { background: #fff; transform: translateY(-2px); }
+.method-facts { list-style: none; display: flex; flex-direction: column; }
+.method-facts li { padding: 22px 0; border-top: 1px solid rgba(247,243,236,0.18); display: grid; grid-template-columns: 104px 1fr; gap: 16px; align-items: baseline; }
+.method-facts li:last-child { border-bottom: 1px solid rgba(247,243,236,0.18); }
+.method-facts strong { font-size: 16px; font-weight: 700; color: var(--gold-light); letter-spacing: -0.01em; }
+.method-facts span { font-size: 14px; line-height: 1.65; color: rgba(247,243,236,0.8); word-break: keep-all; }
+@media (max-width: 767px) { #method { padding: 64px 28px; } .method-facts li { grid-template-columns: 88px 1fr; } }
+
 /* ─── REVIEWS ─── */
 #reviews { background: var(--cream); }
 .reviews-grid {
@@ -1567,6 +1590,23 @@ footer {
 </section>
 
 
+
+<!-- METHOD (훈련사 양성) -->
+<section id="method">
+  <div class="section-max method-inner">
+    <div>
+      <p class="section-eyebrow reveal">Dione Method</p>
+      <h2 class="section-title reveal">훈련사를 가르치는 곳이<br><em>아이를 돌봅니다</em></h2>
+      <p class="method-desc reveal">디오네는 한국애견연맹(KKF)이 지정한 서울 유일의 훈련사 양성기관입니다. 아이들이 매일 머무는 이 건물이 곧 교실이고, 이곳의 돌봄 방식이 곧 교재입니다.</p>
+      <a href="https://method.dione-dogcare.com/" target="_blank" class="btn-method reveal">훈련사 양성 과정 보기 &rarr;</a>
+    </div>
+    <ul class="method-facts reveal">
+      <li><strong>KKF 지정</strong><span>한국애견연맹 지정 훈련사 양성기관 (2026.04.17)</span></li>
+      <li><strong>서울 유일</strong><span>KKF 지정 양성기관 중 서울에 있는 곳은 디오네 메소드뿐입니다</span></li>
+      <li><strong>자격 과정</strong><span>반려견 훈련사 · 반려동물 행동지도사 3·2·1급, 반려동물 종합관리사</span></li>
+    </ul>
+  </div>
+</section>
 
 <!-- REVIEWS -->
 <section id="reviews">
