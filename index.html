@@ -63,9 +63,12 @@
 <!-- 네이버 광고 전환 추적 공통 스크립트 (네이버 공통키 s_199f57c3bb9e) -->
 <script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
 <script type="text/javascript">
-  if (!wcs_add) var wcs_add = {};
-  wcs_add["wa"] = "s_199f57c3bb9e";
-  if (window.wcs) { wcs_do(); }
+  if (window.wcs) {
+    if (!wcs_add) var wcs_add = {};
+    wcs_add["wa"] = "s_199f57c3bb9e";
+    wcs.inflow("dione-dogcare.com");
+    wcs_do();
+  }
 </script>
 <!-- Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PK57QQH91S"></script>
@@ -103,6 +106,14 @@
     var label = (a.textContent || a.getAttribute('title') || '').replace(/\s+/g, ' ').trim().slice(0, 40);
     try { gtag('event', name, { link_url: href, link_text: label, click_location: where }); } catch (err) {}
     try { clarity('event', name); } catch (err) {}
+    // 네이버 광고 전환: 카톡 상담·전화 클릭 = 신청완료(lead)
+    if ((name === 'kakao_click' || name === 'call_click') && window.wcs) {
+      try {
+        var _conv = {};
+        _conv.type = "lead";
+        wcs.trans(_conv);
+      } catch (err) {}
+    }
   }, true);
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
